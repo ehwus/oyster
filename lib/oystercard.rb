@@ -1,5 +1,7 @@
 class Oystercard
   MAX_BALANCE = 90
+  MINIMUM_FARE = 1
+
   attr_reader :balance
 
   def initialize
@@ -22,6 +24,8 @@ class Oystercard
   end
 
   def touch_in
+    check_for_minimum
+
     @journey = true
   end
 
@@ -32,5 +36,9 @@ class Oystercard
   private
   def change_value(amount)
     @balance += amount
+  end
+
+  def check_for_minimum
+    fail "Not enough money on card to travel, soz." if @balance < MINIMUM_FARE
   end
 end
