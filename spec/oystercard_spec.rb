@@ -2,6 +2,8 @@ require 'oystercard'
 
 describe Oystercard do
   let(:station){ double :station }
+  let(:another_station){ double :station }
+
   it "initialized with a balance of 0" do
     expect(subject.balance).to eq(0)
   end
@@ -46,7 +48,7 @@ describe Oystercard do
       card.top_up(4.20)
       card.touch_in(station)
       expect(card.in_journey?).to eq true
-      card.touch_out
+      card.touch_out(another_station)
       expect(card.in_journey?).to eq false
     end
 
@@ -54,7 +56,7 @@ describe Oystercard do
       card = Oystercard.new
       card.top_up(69)
       card.touch_in(station)
-      card.touch_out
+      card.touch_out(another_station)
       expect(card.balance).to eq(68)
     end
 
@@ -62,6 +64,25 @@ describe Oystercard do
       subject.top_up(69)
       subject.touch_in(station)
       expect(subject.entry_station).to eq station
+    end
+  end
+
+  describe "#journey_history" do
+    it "initializes empty" do
+      expect(subject.journey_history).to eq([])
+    end
+
+    it "stores the correct entry station" do
+      subject.top_up(69)
+      subject.touch_in(station)
+      expect(subject.journey_history[0][:start]).to eq(station)
+    end
+
+    it "stores the correct exit station" do
+      subject.top_up(4.20)
+      subject.touch_in(station)
+      subject.touch_out(another_station)
+      expect(subject.journey_history[0][:finish]).to eq(another_station)
     end
   end
 end
