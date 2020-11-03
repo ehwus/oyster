@@ -6,7 +6,6 @@ class Oystercard
 
   def initialize
     @balance = 0
-    @journey = false
     @entry_station = nil
     @journey_history = []
   end
@@ -18,19 +17,17 @@ class Oystercard
   end
 
   def in_journey?
-    @journey
+    !!@entry_station
   end
 
   def touch_in(station)
     check_for_minimum
     remember_entry_station(station)
-
-    @journey = true
   end
 
   def touch_out(station)
     remember_exit_station(station)
-    @journey = false
+    @entry_station = nil
     deduct(MINIMUM_FARE)
   end
 
@@ -41,7 +38,7 @@ class Oystercard
   end
 
   def check_for_minimum
-    fail "Not enough money on card to travel, soz." if @balance < MINIMUM_FARE
+    raise 'Not enough money on card to travel, soz.' if @balance < MINIMUM_FARE
   end
 
   def check_for_limit(amount)
@@ -54,7 +51,7 @@ class Oystercard
 
   def remember_entry_station(station)
     @entry_station = station
-    @journey_history.push({ :start => station })
+    @journey_history.push({ start: station })
   end
 
   def remember_exit_station(station)
