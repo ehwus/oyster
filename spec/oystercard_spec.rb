@@ -20,11 +20,11 @@ describe Oystercard do
     end
   end           
 
-  describe "#deduct" do
-    it "removes from an oyster cards balance" do
-      expect { subject.deduct(1) }.to change { subject.balance }.by(-1)
-    end
-  end
+  # describe "#deduct" do
+  #   it "removes from an oyster cards balance" do
+  #     expect { subject.deduct(1) }.to change { subject.balance }.by(-1)
+  #   end
+  # end
 
   describe "#touch_in" do
     it "changes oyster state to be in_journey? true" do
@@ -37,14 +37,24 @@ describe Oystercard do
     it "won't let you touch in if minimum balance not met" do
       expect{ subject.touch_in }.to raise_error("Not enough money on card to travel, soz.")
     end
+  end
 
-    it "changes oyster state twice" do
+  describe "#touch_out" do
+    it "changes oyster travel state" do
       card = Oystercard.new
       card.top_up(4.20)
       card.touch_in
       expect(card.in_journey?).to eq true
       card.touch_out
       expect(card.in_journey?).to eq false
+    end
+
+    it "removes balance by minimum amount" do
+      card = Oystercard.new
+      card.top_up(69)
+      card.touch_in
+      card.touch_out
+      expect(card.balance).to eq(68)
     end
   end
 end

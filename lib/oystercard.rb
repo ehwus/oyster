@@ -10,15 +10,11 @@ class Oystercard
   end
 
   def top_up(amount)
-    raise "Maximum balance is £#{MAX_BALANCE}" if @balance + amount > MAX_BALANCE
+    check_for_limit(amount)
 
     change_value(amount)
   end
 
-  def deduct(amount)
-    change_value(-amount)
-  end
-  
   def in_journey?
     @journey
   end
@@ -31,14 +27,24 @@ class Oystercard
 
   def touch_out
     @journey = false
+    deduct(MINIMUM_FARE)
   end
 
   private
+
   def change_value(amount)
     @balance += amount
   end
 
   def check_for_minimum
     fail "Not enough money on card to travel, soz." if @balance < MINIMUM_FARE
+  end
+
+  def check_for_limit(amount)
+    raise "Maximum balance is £#{MAX_BALANCE}" if @balance + amount > MAX_BALANCE
+  end
+
+  def deduct(amount)
+    change_value(-amount)
   end
 end
