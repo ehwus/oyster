@@ -1,3 +1,5 @@
+require 'journey'
+
 class Oystercard
   MAX_BALANCE = 90
   MINIMUM_FARE = 1
@@ -51,10 +53,11 @@ class Oystercard
 
   def remember_entry_station(station)
     @entry_station = station
-    @journey_history.push({ start: station })
+    @journey_history.push(Journey.new)
+    @journey_history.last.start = station
   end
 
   def remember_exit_station(station)
-    @journey_history.last[:finish] = station
+    @journey_history.last.finish = station
   end
 end

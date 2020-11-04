@@ -76,14 +76,14 @@ describe Oystercard do
     it "stores the correct entry station" do
       subject.top_up(69)
       subject.touch_in(station)
-      expect(subject.journey_history[0][:start]).to eq(station)
+      expect(subject.journey_history[0].start).to eq(station)
     end
 
     it "stores the correct exit station" do
       subject.top_up(4.20)
       subject.touch_in(station)
       subject.touch_out(another_station)
-      expect(subject.journey_history[0][:finish]).to eq(another_station)
+      expect(subject.journey_history[0].finish).to eq(another_station)
     end
   end
 end
