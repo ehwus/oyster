@@ -6,6 +6,6 @@ class Journey
   end
 
   def fare
-    @start.nil? && @finish.nil? ? 6 : 1
+    @start.nil? || @finish.nil? ? 6 : 1
   end
 end
