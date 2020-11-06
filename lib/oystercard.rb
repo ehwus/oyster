@@ -3,6 +3,7 @@ require 'journeylog'
 
 class Oystercard
   MAX_BALANCE = 90
+  PENALTY = 6
   MINIMUM_FARE = 1
 
   attr_reader :balance, :entry_station, :journey_history
@@ -24,6 +25,7 @@ class Oystercard
   end
 
   def touch_in(station)
+    check_for_penalty unless @journey_history.journeys.empty?
     check_for_minimum
     remember_entry_station(station)
   end
@@ -59,5 +61,9 @@ class Oystercard
 
   def remember_exit_station(station)
     @journey_history.finish(station)
+  end
+
+  def check_for_penalty
+    @balance -= PENALTY if @journey_history.journeys.last.journey_invalid?
   end
 end

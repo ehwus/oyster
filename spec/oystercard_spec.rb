@@ -88,4 +88,11 @@ describe Oystercard do
       test_card.touch_out(another_station)
     end
   end
+
+  it "charges user if tapping in twice with no tapping out" do
+    subject.top_up(Oystercard::MAX_BALANCE)
+    subject.touch_in(station)
+    subject.touch_in(another_station)
+    expect(subject.balance).to eq(Oystercard::MAX_BALANCE - Oystercard::PENALTY)
+  end
 end
