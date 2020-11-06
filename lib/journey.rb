@@ -9,6 +9,16 @@ class Journey
   end
 
   def fare
-    @start.nil? || @finish.nil? ? PENALTY : (@start.zone - @finish.zone).abs + MINIMUM
+    journey_valid? ? PENALTY : give_fare
+  end
+
+  private
+
+  def journey_valid?
+    @start.nil? || @finish.nil?
+  end
+
+  def give_fare
+    (@start.zone - @finish.zone).abs + MINIMUM
   end
 end
