@@ -31,9 +31,11 @@ class Oystercard
   end
 
   def touch_out(station)
+    if @entry_station.nil?
+      @balance -= PENALTY
+      return
+    end
     remember_exit_station(station)
-    @entry_station = nil
-    deduct(MINIMUM_FARE)
   end
 
   private
@@ -61,6 +63,8 @@ class Oystercard
 
   def remember_exit_station(station)
     @journey_history.finish(station)
+    @entry_station = nil
+    deduct(MINIMUM_FARE)
   end
 
   def check_for_penalty
