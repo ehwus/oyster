@@ -3,7 +3,10 @@ require 'oystercard'
 describe Oystercard do
   let(:station){ double :station }
   let(:another_station){ double :station }
-  let(:journey) { double :journey, start: nil, finish: nil }
+  let(:journey) { double :journey, start: station, finish: another_station }
+  let(:journeylog) { double :journeylog, journeys: [journey] }
+  let(:journeylog_class) { double :journeylog_class, new: journeylog }
+
 
   it "initialized with a balance of 0" do
     expect(subject.balance).to eq(0)
@@ -69,21 +72,20 @@ describe Oystercard do
   end
 
   describe "#journey_history" do
-    it "initializes empty" do
-      expect(subject.journey_history).to eq([])
-    end
-
     it "stores the correct entry station" do
-      subject.top_up(69)
-      subject.touch_in(station)
-      expect(subject.journey_history[0].start).to eq(station)
+      test_card = Oystercard.new(journeylog_class)
+      test_card.top_up(69)
+      expect(journeylog).to receive(:start).with(station)
+      test_card.touch_in(station)
     end
 
     it "stores the correct exit station" do
-      subject.top_up(4.20)
-      subject.touch_in(station)
-      subject.touch_out(another_station)
-      expect(subject.journey_history[0].finish).to eq(another_station)
+      test_card = Oystercard.new(journeylog_class)
+      test_card.top_up(4.20)
+      allow(journeylog).to receive(:start).with(station)
+      test_card.touch_in(station)
+      expect(journeylog).to receive(:finish).with(another_station)
+      test_card.touch_out(another_station)
     end
   end
 end

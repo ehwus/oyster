@@ -1,4 +1,5 @@
 require 'journey'
+require 'journeylog'
 
 class Oystercard
   MAX_BALANCE = 90
@@ -6,10 +7,10 @@ class Oystercard
 
   attr_reader :balance, :entry_station, :journey_history
 
-  def initialize
+  def initialize(history_class = JourneyLog)
     @balance = 0
     @entry_station = nil
-    @journey_history = []
+    @journey_history = history_class.new
   end
 
   def top_up(amount)
@@ -53,11 +54,10 @@ class Oystercard
 
   def remember_entry_station(station)
     @entry_station = station
-    @journey_history.push(Journey.new)
-    @journey_history.last.start = station
+    @journey_history.start(station)
   end
 
   def remember_exit_station(station)
-    @journey_history.last.finish = station
+    @journey_history.finish(station)
   end
 end
